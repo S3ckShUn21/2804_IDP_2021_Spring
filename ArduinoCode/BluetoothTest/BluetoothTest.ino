@@ -1,5 +1,7 @@
 #include<SoftwareSerial.h>
 
+// Cole added a comment
+
 int answer = 0;
 SoftwareSerial bluetooth(2, 3);
 
