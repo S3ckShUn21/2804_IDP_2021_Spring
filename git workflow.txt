@@ -1,0 +1,38 @@
+Getting new commits from online
+================================
+- Git bash into your code folder
+	* Navigate into your main code folder
+	* Right click on empty space
+	* "Git Bash Here"
+
+- Enter the command "git pull"
+- This will download the most recent changes to your machine
+- Keep in mind, this will delete any current changes you have so make
+	sure you have those saved somewhere
+
+
+
+
+Committing new changes to the github repo
+=========================================
+- Git bash into your code folder
+	* Navigate into your main code folder
+	* Right click on empty space
+	* "Git Bash Here"
+
+- After you're done making changes, type "git status"
+	* this will chow you all he changes you've made so far, in red
+	* you will most likely want to commit all of those changes
+- Type "git add ."
+	* This will add all of those changes to the 'pre-commit buffer'
+- Type "git status" again to see that all of your changes have been staged
+	* This means theyre in that 'pre-commit buffer'
+	* All of the things that were red should now be green
+- Now to commit tpye "git commit -m "<enter your commit message here>""
+	* Do not include the < or >
+	* You do need the "" around your message though
+	* Keep the message short and concise (~50 chars)
+
+- This means the code has been commited localy, so now you want to push it to the github
+
+- Type "git push" and then your changes will be put online
