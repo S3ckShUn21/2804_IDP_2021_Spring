@@ -1,0 +1,35 @@
+﻿<Window x:Class="WirelessSensorNodeDashboard.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WirelessSensorNodeDashboard"
+                
+        xmlns:views="clr-namespace:WirelessSensorNodeDashboard.Views"
+
+        mc:Ignorable="d"
+        Title="Testing Window Title" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!--Title Row-->
+        <TextBlock Grid.Row="0" Grid.ColumnSpan="2"
+            Text="Testing Title 123" HorizontalAlignment="Center" VerticalAlignment="Center"
+            FontSize="20" Background="Aquamarine"/>
+        
+        <!--Left Menu Bar-->
+        <Rectangle Grid.Row="1" Grid.Column="0"
+            Fill="Green"/>
+        
+        <!--Main Page View-->
+        <views:TerminalView Grid.Row="1" Grid.Column="1"/>
+
+    </Grid>
+</Window>
