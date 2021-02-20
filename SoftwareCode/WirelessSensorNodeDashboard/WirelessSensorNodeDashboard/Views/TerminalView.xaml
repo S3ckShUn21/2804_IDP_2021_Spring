@@ -8,10 +8,60 @@
              xmlns:t="clr-namespace:Simple.Wpf.Terminal;assembly=Simple.Wpf.Terminal"
              xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
              
+             xmlns:vm="clr-namespace:WirelessSensorNodeDashboard.ViewModels"
+             
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    
+    <UserControl.DataContext>
+        <vm:TerminalViewModel/>
+    </UserControl.DataContext>
+    
     <Grid>
-        <t:Terminal x:Name="OutputTerminal"
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+
+        <ScrollViewer x:Name="TerminalScrollViewer" VerticalScrollBarVisibility="auto">
+            <TextBlock  Grid.Row="0" Margin="5,5,5,0"
+                    Text="{Binding Path=TerminalText, Mode=OneWay}"
+                    TextWrapping="Wrap"
+                    Background="LightGray"/>
+        </ScrollViewer>
+
+        <DockPanel Grid.Row="1" Margin="5">
+
+            <Button DockPanel.Dock="Right"
+                    Width="auto"
+                    Content="I'm a send button"
+                    Command="{Binding Path=LineEnteredCommand}"
+                    CommandParameter="{Binding ElementName=InputTextbox, Path=Text}"/>
+
+            <TextBox x:Name="InputTextbox"
+                    Text="{Binding Path=InputText, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                    Width="auto"
+                    Margin="0,0,5,0" VerticalAlignment="Center">
+                <TextBox.InputBindings>
+                    <KeyBinding Key="Return" 
+                                Command="{Binding Path=LineEnteredCommand}"
+                                CommandParameter="{Binding ElementName=InputTextbox, Path=Text}"/>
+                </TextBox.InputBindings>
+            </TextBox>
+
+        </DockPanel>
+
+    </Grid>
+
+
+
+    <!--
+    
+    
+    
+    
+    <t:Terminal x:Name="OutputTerminal"
                    IsReadOnlyCaretVisible="False"
                    VerticalScrollBarVisibility="Visible"
                    IsReadOnly="False"
@@ -19,12 +69,12 @@
                    ItemsSource="{Binding Path=LineItems, Mode=OneWay}"
                    Background="DarkGray"
                    >
-            <b:Interaction.Triggers>
-                <b:EventTrigger EventName="LineEntered">
-                    <b:InvokeCommandAction Command="{Binding Path=LineEnteredCommand, Mode=OneWay}"
+        <b:Interaction.Triggers>
+            <b:EventTrigger EventName="LineEntered">
+                <b:InvokeCommandAction Command="{Binding Path=LineEnteredCommand, Mode=OneWay}"
                                            CommandParameter="{Binding Path=Line, Mode=OneWay, ElementName=OutputTerminal}" />
-                </b:EventTrigger>
-            </b:Interaction.Triggers>
-        </t:Terminal>
-    </Grid>
+            </b:EventTrigger>
+        </b:Interaction.Triggers>
+    </t:Terminal>
+    -->
 </UserControl>

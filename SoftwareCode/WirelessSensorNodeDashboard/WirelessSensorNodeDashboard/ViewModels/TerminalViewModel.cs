@@ -7,37 +7,41 @@ namespace WirelessSensorNodeDashboard.ViewModels
 {
     public sealed class TerminalViewModel : BaseViewModel
     {
-        private ObservableCollection<string> _lineItems;
+        private string _terminalText;
+        private string _inputText;
         private ICommand _lineEnteredCommand;
 
-        public ObservableCollection<string> LineItems
+        public string TerminalText
         {
-            get { return _lineItems; }
-            set 
-            { 
-                _lineItems = value;
-                OnPropertyChanged(nameof(LineItems));
-            }
+            get => _terminalText; 
+            set { _terminalText = value; OnPropertyChanged(nameof(TerminalText)); }
+        }
+
+        public string InputText
+        {
+            get => _inputText;
+            set { _inputText = value; OnPropertyChanged(nameof(InputText)); }
         }
 
         public ICommand LineEnteredCommand 
         {
             get => _lineEnteredCommand;
-            set => SetPropertyAndNotify(ref _lineEnteredCommand, value, "LineEnteredCommand");
+            set => SetPropertyAndNotify(ref _lineEnteredCommand, value, nameof(LineEnteredCommand));
         }
 
         public TerminalViewModel()
         {
-            _lineItems = new ObservableCollection<string>();
-            _lineEnteredCommand = new RelayCommand<string>(LineEntered);
+            _terminalText = "This is the first test of the terminal\n";
+            _inputText = "";
 
-            _lineItems.Add("This is the first test of the terminal...");
+            _lineEnteredCommand = new RelayCommand<string>(LineEntered);
         }
 
         private void LineEntered(string line)
         {
-            _lineItems.Add(line);
-            Debug.Print("Added Line: " + line);
+            InputText = "";
+            TerminalText += line += '\n';
+            
         }
 
 

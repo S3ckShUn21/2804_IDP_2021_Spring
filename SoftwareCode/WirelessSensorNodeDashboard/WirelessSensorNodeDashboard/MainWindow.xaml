@@ -8,7 +8,9 @@
         xmlns:views="clr-namespace:WirelessSensorNodeDashboard.Views"
 
         mc:Ignorable="d"
-        Title="Testing Window Title" Height="450" Width="800">
+        Title="Testing Window Title" Height="450" Width="800"
+        WindowStartupLocation="CenterScreen">
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="100"/>
@@ -30,6 +32,6 @@
         
         <!--Main Page View-->
         <views:TerminalView Grid.Row="1" Grid.Column="1"/>
-
+        
     </Grid>
 </Window>
