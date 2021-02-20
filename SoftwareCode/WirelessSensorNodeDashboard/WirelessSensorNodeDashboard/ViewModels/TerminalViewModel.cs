@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Text;
 using System.Windows.Input;
 using WirelessSensorNodeDashboard.Commands;
 
@@ -7,14 +8,18 @@ namespace WirelessSensorNodeDashboard.ViewModels
 {
     public sealed class TerminalViewModel : BaseViewModel
     {
-        private string _terminalText;
+        private StringBuilder _terminalText;
         private string _inputText;
         private ICommand _lineEnteredCommand;
 
         public string TerminalText
         {
-            get => _terminalText; 
-            set { _terminalText = value; OnPropertyChanged(nameof(TerminalText)); }
+            get => _terminalText.ToString(); 
+            set 
+            { 
+                _terminalText.Clear().Append(value); 
+                OnPropertyChanged(nameof(TerminalText)); 
+            }
         }
 
         public string InputText
@@ -31,7 +36,8 @@ namespace WirelessSensorNodeDashboard.ViewModels
 
         public TerminalViewModel()
         {
-            _terminalText = "This is the first test of the terminal\n";
+            // Set the initial capacity to be 2048 characters
+            _terminalText = new StringBuilder("This is the first test of the terminal\n", 2048);
             _inputText = "";
 
             _lineEnteredCommand = new RelayCommand<string>(LineEntered);
@@ -40,7 +46,8 @@ namespace WirelessSensorNodeDashboard.ViewModels
         private void LineEntered(string line)
         {
             InputText = "";
-            TerminalText += line += '\n';
+            _terminalText.AppendFormat("{0}\n", line);
+            OnPropertyChanged(nameof(TerminalText));
             
         }
 
