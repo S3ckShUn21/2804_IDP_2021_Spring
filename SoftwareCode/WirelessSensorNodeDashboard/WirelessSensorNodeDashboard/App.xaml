@@ -4,6 +4,6 @@
              xmlns:local="clr-namespace:WirelessSensorNodeDashboard"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <!-- Color Palette colors = 202225,282A2E,C1C3C9,F3F4F7,4BBB1B -->
     </Application.Resources>
 </Application>

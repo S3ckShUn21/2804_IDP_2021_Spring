@@ -16,22 +16,25 @@
     <UserControl.DataContext>
         <vm:TerminalViewModel/>
     </UserControl.DataContext>
-    
-    <Grid>
-        
+
+    <Grid Background="#202225">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="100"/>
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
 
         <ScrollViewer x:Name="TerminalScrollViewer" VerticalScrollBarVisibility="auto">
-            <TextBlock  Grid.Row="0" Margin="5,5,5,0"
+            <TextBlock  Grid.Row="0" Grid.Column="0" Margin="5,5,5,0"
                     Text="{Binding Path=TerminalText, Mode=OneWay}"
                     TextWrapping="Wrap"
                     Background="LightGray"/>
         </ScrollViewer>
 
-        <DockPanel Grid.Row="1" Margin="5">
+        <DockPanel Grid.Row="1" Grid.Column="0" Margin="5">
 
             <Button DockPanel.Dock="Right"
                     Width="auto"
@@ -40,7 +43,7 @@
                     CommandParameter="{Binding ElementName=InputTextbox, Path=Text}"/>
 
             <TextBox x:Name="InputTextbox"
-                    Text="{Binding Path=InputText, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                    Text="{Binding Path=InputText}"
                     Width="auto"
                     Margin="0,0,5,0" VerticalAlignment="Center">
                 <TextBox.InputBindings>
@@ -51,6 +54,13 @@
             </TextBox>
 
         </DockPanel>
+
+        <StackPanel Grid.Column="1">
+            <ComboBox ItemsSource="{Binding Path=ComPorts}" SelectedItem="{Binding Path=SelectedComPort}"/>
+            <Button Content="Connect" Command="{Binding Path=OpenSerialPortCommand}"/>
+            <Button Content="Disconnect" Command="{Binding Path=CloseSerialPortCommand}"/>
+
+        </StackPanel>
 
     </Grid>
 

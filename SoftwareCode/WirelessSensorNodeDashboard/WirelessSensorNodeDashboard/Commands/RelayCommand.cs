@@ -36,4 +36,16 @@ namespace WirelessSensorNodeDashboard.Commands
             remove => CommandManager.RequerySuggested -= value;
         }
     }
+
+    public sealed class RelayCommand : RelayCommand<object>
+    {
+        public RelayCommand(Action execute)
+            : base(x => execute(), x => true)
+        {
+        }
+
+        public RelayCommand(Action execute, Func<bool> canExecute) : base(x => execute(), x => canExecute())
+        {
+        }
+    }
 }
