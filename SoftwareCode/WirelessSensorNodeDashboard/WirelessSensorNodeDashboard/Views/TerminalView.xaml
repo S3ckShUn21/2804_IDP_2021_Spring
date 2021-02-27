@@ -4,8 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:WirelessSensorNodeDashboard.Views"
-             
-             xmlns:t="clr-namespace:Simple.Wpf.Terminal;assembly=Simple.Wpf.Terminal"
              xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
              
              xmlns:vm="clr-namespace:WirelessSensorNodeDashboard.ViewModels"
@@ -17,24 +15,30 @@
         <vm:TerminalViewModel/>
     </UserControl.DataContext>
 
-    <Grid Background="#202225">
+    <Grid Background="{StaticResource WSN_Medium}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="100"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="60"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
 
-        <ScrollViewer x:Name="TerminalScrollViewer" VerticalScrollBarVisibility="auto">
-            <TextBlock  Grid.Row="0" Grid.Column="0" Margin="5,5,5,0"
-                    Text="{Binding Path=TerminalText, Mode=OneWay}"
-                    TextWrapping="Wrap"
-                    Background="LightGray"/>
+        <TextBlock Text="Debug UI" Style="{StaticResource Title}"
+                   Grid.ColumnSpan="2"/> 
+
+        <ScrollViewer x:Name="TerminalScrollViewer" VerticalScrollBarVisibility="auto"
+                      Grid.Row="1" Grid.Column="0" Margin="5,0,0,0">
+            <Border BorderBrush="{DynamicResource WSN_Dark}" BorderThickness="3">
+                <TextBlock
+                    Style="{StaticResource Terminal}"
+                    Text="{Binding Path=TerminalText, Mode=OneWay}"/>
+            </Border>
         </ScrollViewer>
 
-        <DockPanel Grid.Row="1" Grid.Column="0" Margin="5">
+        <DockPanel Grid.Row="2" Grid.Column="0" Margin="5">
 
             <Button DockPanel.Dock="Right"
                     Width="auto"
@@ -55,36 +59,21 @@
 
         </DockPanel>
 
-        <StackPanel Grid.Column="1">
-            <ComboBox ItemsSource="{Binding Path=ComPorts}" SelectedItem="{Binding Path=SelectedComPort}"/>
-            <Button Content="Connect" Command="{Binding Path=OpenSerialPortCommand}"/>
-            <Button Content="Disconnect" Command="{Binding Path=CloseSerialPortCommand}"/>
+        <StackPanel Grid.Row="1" Grid.Column="1">
+            <ComboBox ItemsSource="{Binding Path=ComPorts}" SelectedItem="{Binding Path=SelectedComPort}"
+                      Margin="5">
+                <b:Interaction.Triggers>
+                    <b:EventTrigger EventName="DropDownOpened">
+                        <b:InvokeCommandAction Command="{Binding ReloadComPortListCommand}"/>
+                    </b:EventTrigger>
+                </b:Interaction.Triggers>
+            </ComboBox>
+            <Button Content="Connect" Command="{Binding Path=OpenSerialPortCommand}"
+                    Margin="5"/>
+            <Button Content="Disconnect" Command="{Binding Path=CloseSerialPortCommand}"
+                    Margin="5"/>
 
         </StackPanel>
 
     </Grid>
-
-
-
-    <!--
-    
-    
-    
-    
-    <t:Terminal x:Name="OutputTerminal"
-                   IsReadOnlyCaretVisible="False"
-                   VerticalScrollBarVisibility="Visible"
-                   IsReadOnly="False"
-                   Prompt="> "
-                   ItemsSource="{Binding Path=LineItems, Mode=OneWay}"
-                   Background="DarkGray"
-                   >
-        <b:Interaction.Triggers>
-            <b:EventTrigger EventName="LineEntered">
-                <b:InvokeCommandAction Command="{Binding Path=LineEnteredCommand, Mode=OneWay}"
-                                           CommandParameter="{Binding Path=Line, Mode=OneWay, ElementName=OutputTerminal}" />
-            </b:EventTrigger>
-        </b:Interaction.Triggers>
-    </t:Terminal>
-    -->
 </UserControl>

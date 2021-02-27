@@ -1,0 +1,13 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:WirelessSensorNodeDashboard.Styles">
+
+    <!-- Color Palette colors = 202225,282A2E,C1C3C9,F3F4F7,4BBB1B -->
+
+    <SolidColorBrush x:Key="WSN_Dark" Color="#1a1b1c"/>
+    <SolidColorBrush x:Key="WSN_Medium" Color="#282A2E"/>
+    <SolidColorBrush x:Key="WSN_Grey" Color="#C1C3C9"/>
+    <SolidColorBrush x:Key="WSN_White" Color="#F3F4F7"/>
+    <SolidColorBrush x:Key="WSN_Accent" Color="#4BBB1B"/>
+
+</ResourceDictionary>

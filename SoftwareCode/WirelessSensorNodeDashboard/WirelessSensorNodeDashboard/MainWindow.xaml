@@ -13,7 +13,6 @@
     
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="100"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -21,11 +20,6 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <!--Title Row-->
-        <TextBlock Grid.Row="0" Grid.ColumnSpan="2"
-            Text="Testing Title 123" HorizontalAlignment="Center" VerticalAlignment="Center"
-            FontSize="20" Background="Aquamarine"/>
-        
         <!--Left Menu Bar-->
         <Rectangle Grid.Row="1" Grid.Column="0"
             Fill="Green"/>

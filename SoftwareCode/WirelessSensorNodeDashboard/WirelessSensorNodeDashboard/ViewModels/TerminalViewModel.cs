@@ -20,6 +20,7 @@ namespace WirelessSensorNodeDashboard.ViewModels
         private ICommand _lineEnteredCommand;
         private ICommand _openSerialPortCommand;
         private ICommand _closeSerialPortCommand;
+        private ICommand _reloadComPortListCommand;
 
         #endregion
 
@@ -61,6 +62,12 @@ namespace WirelessSensorNodeDashboard.ViewModels
             get => _closeSerialPortCommand;
             set => SetPropertyAndNotify(ref _closeSerialPortCommand, value, nameof(CloseSerialPortCommand));
         }
+
+        public ICommand ReloadComPortListCommand
+        {
+            get => _reloadComPortListCommand;
+            set => SetPropertyAndNotify(ref _reloadComPortListCommand, value, nameof(ReloadComPortListCommand));
+        }
         #endregion
 
         #region CTOR
@@ -72,14 +79,14 @@ namespace WirelessSensorNodeDashboard.ViewModels
 
             // Load COM stuff
             _serialPort = new SerialPort();
-            ComPorts = new List<string>(SerialPort.GetPortNames());
-            OnPropertyChanged(nameof(ComPorts));
+            LoadComPortList();
             SelectedComPort = ComPorts[0];
             OnPropertyChanged(nameof(SelectedComPort));
 
             _lineEnteredCommand = new RelayCommand<string>(LineEntered);
             _openSerialPortCommand = new RelayCommand(OpenSerialPort);
             _closeSerialPortCommand = new RelayCommand(CloseSerialPort, () => _serialPort.IsOpen);
+            _reloadComPortListCommand = new RelayCommand(LoadComPortList);
             
         }
         #endregion
@@ -138,6 +145,12 @@ namespace WirelessSensorNodeDashboard.ViewModels
         {
             _terminalText.Append(line);
             OnPropertyChanged(nameof(TerminalText));
+        }
+
+        private void LoadComPortList()
+        {
+            ComPorts = new List<string>(SerialPort.GetPortNames());
+            OnPropertyChanged(nameof(ComPorts));
         }
         #endregion
 

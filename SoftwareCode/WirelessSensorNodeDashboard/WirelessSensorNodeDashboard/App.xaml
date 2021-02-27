@@ -3,7 +3,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:WirelessSensorNodeDashboard"
              StartupUri="MainWindow.xaml">
+
     <Application.Resources>
-        <!-- Color Palette colors = 202225,282A2E,C1C3C9,F3F4F7,4BBB1B -->
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles/Colors.xaml"/>
+                <ResourceDictionary Source="Styles/TextStyles.xaml"/>
+                <ResourceDictionary Source="Styles/Fonts.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Application.Resources>
+    
+    
 </Application>
