@@ -1,0 +1,14 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:vm="clr-namespace:WirelessSensorNodeDashboard.ViewModels"
+                    xmlns:views="clr-namespace:WirelessSensorNodeDashboard.Views"
+                    xmlns:local="clr-namespace:WirelessSensorNodeDashboard.Styles">
+
+    <DataTemplate DataType="{x:Type vm:TerminalViewModel}">
+        <views:TerminalView/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:MainUIViewModel}">
+        <views:MainUIView/>
+    </DataTemplate>
+
+</ResourceDictionary>

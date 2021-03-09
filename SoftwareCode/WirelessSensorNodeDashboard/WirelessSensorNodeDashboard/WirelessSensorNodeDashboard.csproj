@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\dashboard.png" />
+    <None Remove="Resources\terminal.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="LiveCharts.Wpf" Version="0.9.7" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.31" />
     <PackageReference Include="Simple.Wpf.Terminal" Version="2.3.15" />
@@ -15,6 +20,15 @@
 
   <ItemGroup>
     <Folder Include="Fonts\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\dashboard.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\terminal.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
 </Project>

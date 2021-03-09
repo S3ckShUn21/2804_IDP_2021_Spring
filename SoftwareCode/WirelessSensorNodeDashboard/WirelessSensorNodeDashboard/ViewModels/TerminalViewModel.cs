@@ -21,6 +21,7 @@ namespace WirelessSensorNodeDashboard.ViewModels
         private ICommand _openSerialPortCommand;
         private ICommand _closeSerialPortCommand;
         private ICommand _reloadComPortListCommand;
+        private ICommand _clearTeminalCommand;
 
         #endregion
 
@@ -68,13 +69,19 @@ namespace WirelessSensorNodeDashboard.ViewModels
             get => _reloadComPortListCommand;
             set => SetPropertyAndNotify(ref _reloadComPortListCommand, value, nameof(ReloadComPortListCommand));
         }
+
+        public ICommand ClearTerminalCommand
+        {
+            get => _clearTeminalCommand;
+            set => SetPropertyAndNotify(ref _clearTeminalCommand, value, nameof(ClearTerminalCommand));
+        }
         #endregion
 
         #region CTOR
         public TerminalViewModel()
         {
-            // Set the initial capacity to be 2048 characters
-            _terminalText = new StringBuilder("This is the first test of the terminal\n", 2048);
+            // Set the initial capacity to be 4096 characters
+            _terminalText = new StringBuilder("", 4096);
             InputText = String.Empty;
 
             // Load COM stuff
@@ -83,10 +90,11 @@ namespace WirelessSensorNodeDashboard.ViewModels
             SelectedComPort = ComPorts[0];
             OnPropertyChanged(nameof(SelectedComPort));
 
-            _lineEnteredCommand = new RelayCommand<string>(LineEntered);
+            _lineEnteredCommand = new RelayCommand<string>(LineEntered, param => _serialPort.IsOpen);
             _openSerialPortCommand = new RelayCommand(OpenSerialPort);
             _closeSerialPortCommand = new RelayCommand(CloseSerialPort, () => _serialPort.IsOpen);
             _reloadComPortListCommand = new RelayCommand(LoadComPortList);
+            _clearTeminalCommand = new RelayCommand(ClearTerminal);
             
         }
         #endregion
@@ -151,6 +159,11 @@ namespace WirelessSensorNodeDashboard.ViewModels
         {
             ComPorts = new List<string>(SerialPort.GetPortNames());
             OnPropertyChanged(nameof(ComPorts));
+        }
+
+        private void ClearTerminal()
+        {
+            TerminalText = "";
         }
         #endregion
 

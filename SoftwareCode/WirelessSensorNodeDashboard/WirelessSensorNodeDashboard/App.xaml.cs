@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using WirelessSensorNodeDashboard.ViewModels;
 
 namespace WirelessSensorNodeDashboard
 {
@@ -13,5 +14,16 @@ namespace WirelessSensorNodeDashboard
     /// </summary>
     public partial class App : Application
     {
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            MainWindow mainWindow = new MainWindow()
+            {
+                DataContext = new MainWindowViewModel()
+            };
+
+            mainWindow.Show();
+
+            base.OnStartup(e);
+        }
     }
 }

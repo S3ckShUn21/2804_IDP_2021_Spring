@@ -3,29 +3,44 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:WirelessSensorNodeDashboard.ViewModels"
         xmlns:local="clr-namespace:WirelessSensorNodeDashboard"
                 
         xmlns:views="clr-namespace:WirelessSensorNodeDashboard.Views"
 
         mc:Ignorable="d"
-        Title="Testing Window Title" Height="450" Width="800"
+        Title="Testing Window Title" Height="600" Width="800"
         WindowStartupLocation="CenterScreen" Topmost="True">
-    
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
         <!--Left Menu Bar-->
-        <Rectangle Grid.Row="1" Grid.Column="0"
-            Fill="Green"/>
-        
+        <StackPanel Background="{StaticResource WSN_Dark}" Grid.Column="0" Width="32"
+                    HorizontalAlignment="Center">
+            
+            <Button Style="{StaticResource WSN_SideMenuButton}"
+                    Command="{Binding Path=MenuBarClickedCommand}"
+                    CommandParameter="MainUI">
+                <Image Source="/Resources/dashboard.png" Margin="2" Stretch="UniformToFill"/>
+            </Button>
+            <Button Style="{StaticResource WSN_SideMenuButton}"
+                    Command="{Binding Path=MenuBarClickedCommand}"
+                    CommandParameter="Terminal">
+                <Image Source="/Resources/terminal.png" Margin="2" Stretch="UniformToFill"/>
+            </Button>
+            
+        </StackPanel>
+
         <!--Main Page View-->
-        <views:TerminalView Grid.Row="1" Grid.Column="1"/>
-        
+        <ContentControl Content="{Binding Path=CurrentContentControl}"
+                        Grid.Row="1" Grid.Column="1"/>
+
     </Grid>
 </Window>

@@ -6,14 +6,8 @@
              xmlns:local="clr-namespace:WirelessSensorNodeDashboard.Views"
              xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
              
-             xmlns:vm="clr-namespace:WirelessSensorNodeDashboard.ViewModels"
-             
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    
-    <UserControl.DataContext>
-        <vm:TerminalViewModel/>
-    </UserControl.DataContext>
 
     <Grid Background="{StaticResource WSN_Medium}">
         <Grid.ColumnDefinitions>
@@ -42,7 +36,10 @@
 
             <Button DockPanel.Dock="Right"
                     Width="auto"
-                    Content="I'm a send button"
+                    Content="Send"
+                    Padding="5,0,5,0"
+                    VerticalContentAlignment="Center"
+                    HorizontalContentAlignment="Center"
                     Command="{Binding Path=LineEnteredCommand}"
                     CommandParameter="{Binding ElementName=InputTextbox, Path=Text}"/>
 
@@ -59,8 +56,10 @@
 
         </DockPanel>
 
-        <StackPanel Grid.Row="1" Grid.Column="1">
+        <DockPanel Grid.Row="1" Grid.Column="1" Grid.RowSpan="2"
+                   LastChildFill="False">
             <ComboBox ItemsSource="{Binding Path=ComPorts}" SelectedItem="{Binding Path=SelectedComPort}"
+                      DockPanel.Dock="Top"
                       Margin="5">
                 <b:Interaction.Triggers>
                     <b:EventTrigger EventName="DropDownOpened">
@@ -69,11 +68,16 @@
                 </b:Interaction.Triggers>
             </ComboBox>
             <Button Content="Connect" Command="{Binding Path=OpenSerialPortCommand}"
+                    DockPanel.Dock="Top"
                     Margin="5"/>
             <Button Content="Disconnect" Command="{Binding Path=CloseSerialPortCommand}"
+                    DockPanel.Dock="Top"
+                    Margin="5"/>
+            <Button Content="Clear Terminal" Command="{Binding Path=ClearTerminalCommand}"
+                    DockPanel.Dock="Bottom"
                     Margin="5"/>
 
-        </StackPanel>
+        </DockPanel>
 
     </Grid>
 </UserControl>
