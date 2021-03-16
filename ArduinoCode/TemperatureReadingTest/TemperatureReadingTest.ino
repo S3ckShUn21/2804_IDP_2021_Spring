@@ -6,7 +6,7 @@
 char outputStr[32];
 
 void setup() {
-  Serial.being(9600);
+  Serial.begin(9600);
   pinMode(TEMP_READ_PIN, INPUT);
 }
 
@@ -14,11 +14,11 @@ void loop() {
 
   // gather the data
   int reading = analogRead(TEMP_READ_PIN);
-  float voltage_mV = reading * (5f/1024f);       // (5v / 1024setps) is the multiplier per step
+  float voltage_mV = reading * (5.0f/1024.0f);       // (5v / 1024setps) is the multiplier per step
   int temp = translateTemperature( voltage_mV );
 
   // format the output
-  sprintf( outputStr, "%04d, %4.2f, %d", reading, voltage, temp );
+  sprintf( outputStr, "%04d, %4.2f, %d", reading, voltage_mV, temp );
   Serial.println( outputStr );
 
   delay(100); // data collection @ 10Hz so you can actually read the data
