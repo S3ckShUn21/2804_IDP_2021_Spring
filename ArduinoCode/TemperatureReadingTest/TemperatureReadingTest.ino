@@ -3,7 +3,7 @@
 #define TEMP_ZERO_DEGREES_OFFSET  500  // 500mV
 #define TEMP_MV_PER_C             10   // 10mV / *C
 
-char outputStr[32];
+char outputStr[24];
 
 void setup() {
   Serial.begin(9600);
@@ -14,11 +14,11 @@ void loop() {
 
   // gather the data
   int reading = analogRead(TEMP_READ_PIN);
-  float voltage_mV = reading * (5.0f/1024.0f);       // (5v / 1024setps) is the multiplier per step
+  float voltage_mV = (float)reading * (5.0f/1024.0f);       // (5v / 1024setps) is the multiplier per step
   int temp = translateTemperature( voltage_mV );
 
   // format the output
-  sprintf( outputStr, "%04d, %4.2f, %d", reading, voltage_mV, temp );
+  sprintf( outputStr, "%04d, %04d, %d", reading, (int)voltage_mV, temp );
   Serial.println( outputStr );
 
   delay(100); // data collection @ 10Hz so you can actually read the data
