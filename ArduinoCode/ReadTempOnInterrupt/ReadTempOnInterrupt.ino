@@ -1,18 +1,17 @@
 // Pin Defines
-#define TEMP_READ_PIN A0
+#define TEMP_READ_PIN             A0
 // Temperature Defines
-#define TEMP_ZERO_DEGREES_OFFSET  500.0f  // 500mV
-#define TEMP_MV_PER_C             10.0f   // 10mV / *C
-#define VOLTAGE_SCALER 4.8828125f         // 4.8 mV per analogReading
-#define NUM_TEMP_SAMPLES 32                // Must be a multiple of 2
+#define TEMP_ZERO_DEGREES_OFFSET  500.0f          // 500mV
+#define TEMP_MV_PER_C             10.0f           // 10mV / *C
+#define VOLTAGE_SCALER            4.8828125f      // 4.8 mV per analogReading
+#define NUM_TEMP_SAMPLES          32 
 // Interrupt Defines
-#define INTERRUPT_PERIODS 15 // Interrupt_Period = # * 2 (in sec)
+#define INTERRUPT_PERIODS         15              // Total time = # * 2 (in sec)
 
 
 volatile byte interruptCount = 0;
 volatile float avgMeasurement = 0;
 volatile bool sendData = false;
-const int shiftValue = (int)(log(NUM_TEMP_SAMPLES)/log(2));
 
 
 void setup() {
@@ -70,7 +69,7 @@ void completeTemperatureReading(void) {
     uint16_t reading = analogRead(TEMP_READ_PIN);
     avgMeasurement += translateTemperature( reading * VOLTAGE_SCALER ); 
   }
-  avgMeasurement /=  NUM_TEMP_SAMPLES; // divide by NUM_TEMP_SAMPLES
+  avgMeasurement /=  NUM_TEMP_SAMPLES;
   sendData = true;
 }
 
