@@ -3,18 +3,21 @@
 #define TEMP_ZERO_DEGREES_OFFSET  500  // 500mV
 #define TEMP_MV_PER_C             10   // 10mV / *C
 
+#define VOLTAGE_SCALER 4.8828125f      // 4.8 mV per analogReading
+
 char outputStr[24];
 
 void setup() {
   Serial.begin(9600);
   pinMode(TEMP_READ_PIN, INPUT);
+  Serial.println("Reading, Voltage(mV), Temperature(*C)");
 }
 
 void loop() {
 
   // gather the data
   int reading = analogRead(TEMP_READ_PIN);
-  float voltage_mV = (float)reading * (5.0f/1024.0f);       // (5v / 1024setps) is the multiplier per step
+  float voltage_mV = reading * VOLTAGE_SCALER;
   int temp = translateTemperature( voltage_mV );
 
   // format the output
