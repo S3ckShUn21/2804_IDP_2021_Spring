@@ -28,7 +28,7 @@ void loop() {
   
 }
 
-// Based around the MCP 9700E
+// Based on the MCP9700E
 // Takes a voltage in milivolts and turn it into a temperature reading in *C
 int translateTemperature( float voltage ) {
   float deltaV = voltage - (float)TEMP_ZERO_DEGREES_OFFSET; // get the voltage to the zero *C point
