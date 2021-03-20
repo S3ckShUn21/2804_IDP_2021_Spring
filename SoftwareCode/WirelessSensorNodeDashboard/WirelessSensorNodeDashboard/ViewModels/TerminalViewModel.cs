@@ -87,11 +87,17 @@ namespace WirelessSensorNodeDashboard.ViewModels
             // Load COM stuff
             _serialPort = new SerialPort();
             LoadComPortList();
-            SelectedComPort = ComPorts[0];
+            if( ComPorts.Count == 0 )
+            {
+                SelectedComPort = null;
+            } else
+            {
+                SelectedComPort = ComPorts[0];
+            }
             OnPropertyChanged(nameof(SelectedComPort));
 
             _lineEnteredCommand = new RelayCommand<string>(LineEntered, param => _serialPort.IsOpen);
-            _openSerialPortCommand = new RelayCommand(OpenSerialPort);
+            _openSerialPortCommand = new RelayCommand(OpenSerialPort, () => SelectedComPort != null);
             _closeSerialPortCommand = new RelayCommand(CloseSerialPort, () => _serialPort.IsOpen);
             _reloadComPortListCommand = new RelayCommand(LoadComPortList);
             _clearTeminalCommand = new RelayCommand(ClearTerminal);

@@ -27,7 +27,7 @@ namespace WirelessSensorNodeDashboard.ViewModels
             _terminalViewModel = new TerminalView();
             _mainUIViewModel = new MainUIView();
 
-            CurrentContentControl = _terminalViewModel;
+            CurrentContentControl = _mainUIViewModel;
 
             _menuBarClickedCommand = new RelayCommand<string>(ChangePage);
         }
