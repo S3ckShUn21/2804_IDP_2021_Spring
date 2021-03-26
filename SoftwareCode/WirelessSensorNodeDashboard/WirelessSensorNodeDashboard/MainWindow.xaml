@@ -10,7 +10,7 @@
 
         mc:Ignorable="d"
         Title="Wireless Sensor Node Dashboard" Height="600" Width="800"
-        WindowStartupLocation="CenterScreen" Topmost="True">
+        WindowStartupLocation="CenterScreen">
 
     <Grid>
         <Grid.RowDefinitions>

@@ -5,19 +5,13 @@ namespace WirelessSensorNodeDashboard.Commands
 {
     public class RelayCommand<T> : ICommand
     {
-        private readonly Func<T, bool> _canExecute;
-        private readonly Action<T> _execute;
+        protected readonly Func<T, bool> _canExecute;
+        protected readonly Action<T> _execute;
 
-        public RelayCommand(Action<T> execute, Func<T, bool> canExecute)
+        public RelayCommand(Action<T> execute, Func<T, bool> canExecute = null)
         {
             _execute = execute;
             _canExecute = canExecute;
-        }
-
-        public RelayCommand(Action<T> execute)
-        {
-            _execute = execute;
-            _canExecute = null;
         }
 
         public void Execute(object parameter)

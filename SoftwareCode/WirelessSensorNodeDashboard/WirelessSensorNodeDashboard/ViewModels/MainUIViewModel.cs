@@ -1,47 +1,55 @@
-﻿using System;
+﻿using LiveCharts;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading;
 using System.Windows.Input;
 using WirelessSensorNodeDashboard.Commands;
+using WirelessSensorNodeDashboard.Util;
 
 namespace WirelessSensorNodeDashboard.ViewModels
 {
     public sealed class MainUIViewModel : BaseViewModel
     {
+        private bool _canLoadData;
+        private int _numRecordsToShow;
+        
+        public int NumRecordsToShow 
+        { 
+            get => _numRecordsToShow; 
+            set
+            {
+                _numRecordsToShow = value;
+                OnPropertyChanged(nameof(NumRecordsToShow));
+            } 
+        }
 
-        private ICommand _testCommand;
+        public ChartValues<TemperatureRecord> TemperatureRecords { get; set; }
 
-        public ICommand TestCommand
+        private ICommand _loadDataCommand;
+        public ICommand LoadDataCommand
         {
-            get => _testCommand;
-            set => SetPropertyAndNotify(ref _testCommand, value, nameof(TestCommand));
+            get => _loadDataCommand;
+            set => SetPropertyAndNotify(ref _loadDataCommand, value, nameof(LoadDataCommand));
         }
 
         public MainUIViewModel()
         {
-            _testCommand = new RelayCommand(testFunction);
+            _canLoadData = true;
+            _loadDataCommand = new RelayCommand(LoadRecordData, () => _canLoadData);
+            TemperatureRecords = new ChartValues<TemperatureRecord>();
+            NumRecordsToShow = 30;
         }
 
-
-        private void testFunction()
+        private void testWriteData()
         {
             Debug.WriteLine("Test Function Start");
 
-            // Reading Data
-
-            string path = @"SavedData.csv";
-            Debug.WriteLine(path);
-            string[] lines = File.ReadAllLines(path);
-            /*foreach( string line in lines )
-            {
-                Debug.WriteLine(line);
-            }*/
-
-            // Writing Data to a file and reading it back
-            string writtenPath = @"WrittenData.csv";
+            // Writing Data to a file
+            string writtenPath = @TemperatureRecord.RecordFileName;
             if (!File.Exists(writtenPath))
             {
                 using (StreamWriter sw = File.CreateText(writtenPath))
@@ -49,68 +57,56 @@ namespace WirelessSensorNodeDashboard.ViewModels
                     for (int i = 0; i < 1000; i++)
                     {
                         DateTime time = DateTime.Now;
-                        sw.WriteLine("{0},{1:D4}", time.ToString("yyyy-MM-dd HH:mm:ss:ff"), i);
+                        sw.WriteLine("{0},{1:D4}", time.ToString(TemperatureRecord.DateTimeFormat), i);
                         Thread.Sleep(10);
                     }
                 }
-                Debug.WriteLine(writtenPath);
-                lines = File.ReadAllLines(writtenPath);
-                foreach (string line in lines)
-                {
-                    Debug.WriteLine(line);
-                }
-            }
-            
-            // Reading the last 30 lines of the csv file
-            using (FileStream file = File.OpenRead(writtenPath))
-            {
-                // Read from the front of the file
-                byte[] buffer = new byte[32];
-                file.Read(buffer, 0, 32);
-                for( int i = 0; i<32; i++)
-                {
-                    Debug.Write((char)buffer[i]);
-                }
-                Debug.WriteLine("");
-
-                // Testing the reading from the back
-                file.Seek(0, SeekOrigin.End);
-                int newlineCount = 0;
-                for( int i = 1; i <= 300; i++ )
-                {
-                    file.Seek(-i, SeekOrigin.End);
-                    char val = (char)file.ReadByte();
-                    if( val == '\n')
-                    {
-                        newlineCount++;
-                    }
-                    //Debug.WriteLine("{0} => {1}",val ,(char)val);
-                }
-                Debug.WriteLine(newlineCount);
-
-                // Trying to read just the last 5 lines
-                Debug.WriteLine("5 Lines Test");
-                newlineCount = 0;
-                long filePointer = 0;
-                long fileSize = file.Length;
-                while( newlineCount < 6 && filePointer < fileSize )
-                {
-                    file.Seek(-filePointer, SeekOrigin.End);
-                    if((char)file.ReadByte() == '\n')
-                    {
-                        newlineCount++;
-                    }
-                    filePointer++;
-                }
-                byte[] endingBuffer = new byte[300];
-                file.Read(endingBuffer, 0, 300);
-                Debug.WriteLine(Encoding.Default.GetString(endingBuffer));
-
             }
 
             Debug.WriteLine("Test Function End");
         }
 
+        private void LoadRecordData()
+        {
+            _canLoadData = false;
+            using( FileStream fs = File.OpenRead(TemperatureRecord.RecordFileName))
+            {
+                pullLastNRecords(fs, NumRecordsToShow);
+            }
+            _canLoadData = true;
+        }
 
+        // TODO: This code is nowhere near safe to execute on anthing other than the record data
+        private void pullLastNRecords( FileStream file, int numRecords )
+        {
+            // setup vars
+            int newLineCount = numRecords + 1; // Add 1 because of split adds an extra record
+            long fileSize = file.Length;
+            long filePointer = fileSize;
+            // find how many butes to read
+            while( newLineCount > 0 && filePointer > 0 )
+            {
+                file.Seek(filePointer, SeekOrigin.Begin);
+                int character = file.ReadByte();
+                if( (char) character == '\n')
+                {
+                    newLineCount--;
+                }
+                filePointer--;
+            }
+            // read those bytes and get a list of strings
+            int numToRead = (int) (fileSize - filePointer - 2); // There are 2 extra EOF bytes at the end of the array
+            byte[] bytes = new byte[numToRead];
+            file.Read(bytes, 0, numToRead);
+            string[] records = Encoding.Default.GetString(bytes).Split("\r\n");
+            // convert list of strings to list of temp records
+            TemperatureRecords.Clear();
+            foreach( string s in records )
+            {
+                if( !string.IsNullOrEmpty(s) )
+                    TemperatureRecords.Add(TemperatureRecord.CreateRecord(s));
+            }
+            OnPropertyChanged(nameof(TemperatureRecords));
+        }
     }
 }
