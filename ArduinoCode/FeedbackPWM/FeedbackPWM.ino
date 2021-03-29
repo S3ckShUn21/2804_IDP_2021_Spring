@@ -1,4 +1,4 @@
-int pwm_pin = 9;
+int pwm_pin = 11;
 double pwm_freq = 127;
 double duty_cycle = 50;
 int boost_pin = A5; // subject to change
@@ -8,7 +8,7 @@ const int error = 5; // (5/1023)*(5 V range)*(3.55 Division factor) is 0.09 V er
 
 void setup() {
   Serial.begin(9600);
-  TCCR1B = (TCCR1B & 0b11111000) | 0x01; // sets frequency at 31372.55 Hz 
+  TCCR2B = (TCCR2B & 0b11111000) | 0x01; // sets Timer2 frequency at 31372.55 Hz 
   pinMode(pwm_pin, OUTPUT);
   
 }
