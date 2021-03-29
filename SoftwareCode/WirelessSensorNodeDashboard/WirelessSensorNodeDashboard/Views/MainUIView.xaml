@@ -8,7 +8,7 @@
              xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
              
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="550" d:DesignWidth="800">
 
     <UserControl.DataContext>
         <vm:MainUIViewModel/>
@@ -22,16 +22,21 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="60"/>
             <RowDefinition MinHeight="300"/>
-            <RowDefinition Height="100"/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
 
+        <!-- Title -->
         <TextBlock  Grid.Row="0" Grid.ColumnSpan="2"
                     Text="Temperature Dashboard" 
                     Style="{StaticResource Title}"/>
 
+        <!-- Main Graph -->
         <lvc:CartesianChart Grid.Column="0" Grid.Row="1" Margin="10"
                             AnimationsSpeed="0:0:0.5" Hoverable="False" 
-                            DataTooltip="{x:Null}">
+                            DataTooltip="{x:Null}"
+                            BorderThickness="2" BorderBrush="Black"
+                            Background="{StaticResource WSN_Dark}"
+                            Padding="10">
             <lvc:CartesianChart.Series>
                 <lvc:LineSeries Title="Temperature Records"
                                 Values="{Binding TemperatureRecords}"
@@ -44,6 +49,7 @@
             
         </lvc:CartesianChart>
 
+        <!-- Right side panel information -->
         <StackPanel Grid.Column="1" Grid.Row="1" 
                     Orientation="Vertical" Margin="5">
             <TextBlock Text="Num Records&#x0a;To Show" 
@@ -54,8 +60,75 @@
                      Margin="5"/>
         </StackPanel>
 
+        <!-- Controls below the graph -->
+        <DockPanel Grid.Column="0" Grid.Row="2" LastChildFill="False">
+
+            <!-- Current Temperature Display -->
+            <StackPanel DockPanel.Dock="Left" Margin="15">
+                <Label Content="Current Reading" Foreground="{StaticResource WSN_White}"/>
+                <Border BorderThickness="2" BorderBrush="Black"
+                        Background="{StaticResource WSN_White}"
+                        VerticalAlignment="Center" Width="auto">
+                    <TextBlock  Margin="4" VerticalAlignment="Center" HorizontalAlignment="Center"
+                                Text="28 &#186;C" FontSize="20"/>
+                </Border>
+            </StackPanel>
+
+            <!-- Checkbox for which unit to display -->
+            <StackPanel DockPanel.Dock="Left"
+                        Orientation="Vertical" VerticalAlignment="Center"
+                        Margin="15">
+                <CheckBox Content="Celcius" Foreground="{StaticResource WSN_White}" Margin="2"/>
+                <CheckBox Content="Fahrenheit" Foreground="{StaticResource WSN_White}" Margin="2"/>
+            </StackPanel>
+
+            <!-- Weather API information -->
+            <Border DockPanel.Dock="Right" Margin="5,5,50,5"
+                    BorderThickness="2" BorderBrush="Black"
+                    Background="{StaticResource WSN_Dark}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Enter your zipcode -->
+                    <TextBox    Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+                                Height="20" Margin="5"
+                                Text="Enter Zip Code"/>
+                    <!-- Location Temperature -->
+                    <StackPanel Grid.Row="1" Grid.Column="0" Margin="5" Orientation="Vertical">
+                        <Label Content="Current Temperature" VerticalContentAlignment="Top"
+                               FontSize="12"
+                               Foreground="{StaticResource WSN_White}"/>
+                        <TextBlock  TextAlignment="Center" VerticalAlignment="Center"
+                                Text="15 &#186;C" Foreground="{StaticResource WSN_White}"/>
+                    </StackPanel>
+                    <!-- Weather Description -->
+                    <TextBox    Grid.Row="1" Grid.Column="1"
+                                BorderThickness="0"
+                                Background="Transparent" Foreground="{StaticResource WSN_White}"
+                                TextAlignment="Center" VerticalAlignment="Center"
+                                FontSize="15"
+                                Text="Partly Cloudy"/>
+                    <!-- Picture of the weather -->
+                    <Image  Grid.Row="0" Grid.Column="2" Grid.RowSpan="2"
+                            Height="64" Margin="5"
+                            RenderOptions.BitmapScalingMode="HighQuality"
+                            Source="/Resources/partlycloudy.png"/>
+                </Grid>
+            </Border>
+
+        </DockPanel>
+
+        <!-- Force reload of the data -->
         <Button Grid.Column="1" Grid.Row="2" Margin="10"
-                Content="Test Button"
+                Content="Force Reload"
                 Command="{Binding Path=LoadDataCommand}"/>
         
     </Grid>
