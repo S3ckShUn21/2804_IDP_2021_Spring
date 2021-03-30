@@ -14,14 +14,14 @@
 #define NUM_TEMP_SAMPLES          32
 
 // Interrupt Defines
-#define INTERRUPT_PERIODS         15              // Total time = # * 2 (in sec)
+#define INTERRUPT_PERIODS         1              // Total time = # * 2 (in sec)
 
 // Boost Converter Defines
-#define BOOST_READING_REF         532             // ( (9.2/3.55) / 5 ) * 1023
-#define BOOST_MAX_ERROR           5               // (5/1023) * (5V range) * (3.55 Division factor) = 0.09V
-#define BOOST_FREQ                127             // 
-#define BOOST_MAX_DUTY_CYCLE      154             // 60% => 60 / 100 * (256 range)         
-#define BOOST_MIN_DUTY_CYCLE      26              // 10% => 10 / 100 * (256 range)
+#define BOOST_READING_REF         532             // ( (9.2/3.55) / 5 ) * 1023 ~~~~ +- some error in the resistor vals
+#define BOOST_MAX_ERROR           4               // (3/1023) * (5V range) * (3.55 Division factor) = 0.052V
+#define BOOST_MAX_DUTY_CYCLE      154             // 60% => 60 / 100 * (256 range)
+#define BOOST_AVG_DUTY_CYCLE      141             // 55% => 55 / 100 * (256 range)
+#define BOOST_MIN_DUTY_CYCLE      128             // 50% => 50 / 100 * (256 range)
 
 // Interrupt Vars
 volatile byte interruptCount = 0;
@@ -39,6 +39,7 @@ void setup() {
   //
   // IO Setup
   //
+  Serial.begin(9600);
   pinMode(TEMP_READ_PIN, INPUT);
   pinMode(BOOST_READ_PIN, INPUT);
   pinMode(BOOST_CTRL_PIN, OUTPUT);
@@ -123,13 +124,22 @@ float translateTemperature( float voltage ) {
 }
 
 void updateBoostConverter(void) {
-  int boostOut = analogRead(BOOST_READ_PIN);
-  
-  if( boostOut < (BOOST_READING_REF - BOOST_MAX_ERROR) && dutyCycle < BOOST_MAX_DUTY_CYCLE ) {
-    dutyCycle++; 
-  } else if( boostOut > (BOOST_READING_REF + BOOST_MAX_ERROR) && dutyCycle > BOOST_MIN_DUTY_CYCLE) {
-    dutyCycle--;
+  int boostOut = 0;
+  for( int i = 0; i < 16; i++ ) {
+    boostOut += analogRead(BOOST_READ_PIN);  
   }
-
+  boostOut >>= 4; // divide by 8
+  
+  if( boostOut < (BOOST_READING_REF - BOOST_MAX_ERROR) ) {
+    dutyCycle = BOOST_MAX_DUTY_CYCLE; 
+  } else if( boostOut > (BOOST_READING_REF + BOOST_MAX_ERROR) ) {
+    dutyCycle = BOOST_MIN_DUTY_CYCLE;
+  } else {
+    dutyCycle = BOOST_AVG_DUTY_CYCLE;
+  }
+  
+  Serial.print(dutyCycle);
+  Serial.print(", ");
+  Serial.println(boostOut);
   analogWrite(BOOST_CTRL_PIN, dutyCycle);
 }
