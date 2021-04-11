@@ -2,13 +2,17 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:vm="clr-namespace:WirelessSensorNodeDashboard.ViewModels"
                     xmlns:views="clr-namespace:WirelessSensorNodeDashboard.Views"
-                    xmlns:local="clr-namespace:WirelessSensorNodeDashboard.Styles">
+                    xmlns:local="clr-namespace:WirelessSensorNodeDashboard.Styles"
+                    xmlns:wirelesssensornodedashboard="clr-namespace:WirelessSensorNodeDashboard">
 
     <DataTemplate DataType="{x:Type vm:TerminalViewModel}">
-        <views:TerminalView/>
+        <views:TerminalViewModel/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:MainWindowViewModel}">
+        <wirelesssensornodedashboard:MainWindow/>
     </DataTemplate>
     <DataTemplate DataType="{x:Type vm:MainUIViewModel}">
-        <views:MainUIView/>
+        <views:MainUIViewModel/>
     </DataTemplate>
 
 </ResourceDictionary>

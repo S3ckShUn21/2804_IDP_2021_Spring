@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="WirelessSensorNodeDashboard.Views.MainUIView"
+﻿<UserControl x:Class="WirelessSensorNodeDashboard.Views.MainUIViewModel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -9,10 +9,6 @@
              
              mc:Ignorable="d" 
              d:DesignHeight="550" d:DesignWidth="800">
-
-    <UserControl.DataContext>
-        <vm:MainUIViewModel/>
-    </UserControl.DataContext>
 
     <Grid Background="{StaticResource WSN_Medium}">
         <Grid.ColumnDefinitions>
@@ -31,23 +27,30 @@
                     Style="{StaticResource Title}"/>
 
         <!-- Main Graph -->
-        <lvc:CartesianChart Grid.Column="0" Grid.Row="1" Margin="10"
-                            AnimationsSpeed="0:0:0.5" Hoverable="False" 
-                            DataTooltip="{x:Null}"
-                            BorderThickness="2" BorderBrush="Black"
-                            Background="{StaticResource WSN_Dark}"
-                            Padding="10">
-            <lvc:CartesianChart.Series>
-                <lvc:LineSeries Title="Temperature Records"
+        <Border Grid.Column="0" Grid.Row="1" Margin="10"
+                BorderBrush="Black" BorderThickness="2"
+                Background="{StaticResource WSN_Dark}"
+                Padding="10">
+            <lvc:CartesianChart AnimationsSpeed="0:0:0.5" Hoverable="False" 
+                                DataTooltip="{x:Null}"
+                                Background="Transparent">
+                <lvc:CartesianChart.AxisY>
+                    <lvc:Axis MinValue="-10" MaxValue="50"/>
+                </lvc:CartesianChart.AxisY>
+                <lvc:CartesianChart.AxisX>
+                    <lvc:Axis MinValue="0" MaxValue="30"/>
+                </lvc:CartesianChart.AxisX>
+                <lvc:CartesianChart.Series>
+                    <lvc:LineSeries Title="Temperature Records"
                                 Values="{Binding TemperatureRecords}"
                                 PointGeometry="{x:Null}" 
                                 LineSmoothness="1"
                                 StrokeThickness="2" 
                                 Stroke="{StaticResource WSN_Accent}"
                                 Fill="Transparent"/>
-            </lvc:CartesianChart.Series>
-            
-        </lvc:CartesianChart>
+                </lvc:CartesianChart.Series>
+            </lvc:CartesianChart>
+        </Border>
 
         <!-- Right side panel information -->
         <StackPanel Grid.Column="1" Grid.Row="1" 

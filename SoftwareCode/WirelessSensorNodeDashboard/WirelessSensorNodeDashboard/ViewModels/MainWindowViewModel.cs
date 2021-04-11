@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO.Ports;
 using System.Text;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -10,10 +12,10 @@ namespace WirelessSensorNodeDashboard.ViewModels
 {
     class MainWindowViewModel : BaseViewModel
     {
-        private TerminalView _terminalViewModel;
-        private MainUIView _mainUIViewModel;
+        private TerminalViewModel _terminalViewModel;
+        private MainUIViewModel _mainUIViewModel;
 
-        public ContentControl CurrentContentControl { get; set; }
+        public BaseViewModel CurrentViewModel { get; set; }
 
         private ICommand _menuBarClickedCommand;
         public ICommand MenuBarClickedCommand
@@ -22,12 +24,12 @@ namespace WirelessSensorNodeDashboard.ViewModels
             set => SetPropertyAndNotify(ref _menuBarClickedCommand, value, nameof(MenuBarClickedCommand));
         }
 
-        public MainWindowViewModel()
+        public MainWindowViewModel(SerialPort serialPort)
         {
-            _terminalViewModel = new TerminalView();
-            _mainUIViewModel = new MainUIView();
+            _terminalViewModel = new TerminalViewModel(serialPort);
+            _mainUIViewModel = new MainUIViewModel(serialPort);
 
-            CurrentContentControl = _mainUIViewModel;
+            CurrentViewModel = _mainUIViewModel;
 
             _menuBarClickedCommand = new RelayCommand<string>(ChangePage);
         }
@@ -38,13 +40,14 @@ namespace WirelessSensorNodeDashboard.ViewModels
             switch (page)
             {
                 case "MainUI":
-                    CurrentContentControl = _mainUIViewModel;
+                    CurrentViewModel = _mainUIViewModel;
                     break;
                 case "Terminal":
-                    CurrentContentControl = _terminalViewModel;
+                    CurrentViewModel = _terminalViewModel;
                     break;
             }
-            OnPropertyChanged(nameof(CurrentContentControl));
+            Debug.Print("Page Button Pressed: " + page);
+            OnPropertyChanged(nameof(CurrentViewModel));
         }
     }
 }

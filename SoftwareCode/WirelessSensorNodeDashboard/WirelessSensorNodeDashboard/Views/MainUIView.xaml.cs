@@ -16,9 +16,9 @@ namespace WirelessSensorNodeDashboard.Views
     /// <summary>
     /// Interaction logic for GraphView.xaml
     /// </summary>
-    public partial class MainUIView : UserControl
+    public partial class MainUIViewModel : UserControl
     {
-        public MainUIView()
+        public MainUIViewModel()
         {
             InitializeComponent();
         }

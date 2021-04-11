@@ -3,12 +3,11 @@ using WirelessSensorNodeDashboard.ViewModels;
 
 namespace WirelessSensorNodeDashboard.Views
 {
-    public partial class TerminalView : UserControl
+    public partial class TerminalViewModel : UserControl
     {
-        public TerminalView()
+        public TerminalViewModel()
         {
             InitializeComponent();
-            DataContext = new TerminalViewModel();
         }
     }
 }

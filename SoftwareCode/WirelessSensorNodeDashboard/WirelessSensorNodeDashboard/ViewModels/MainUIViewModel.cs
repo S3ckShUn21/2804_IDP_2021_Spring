@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Ports;
 using System.Text;
 using System.Threading;
 using System.Windows.Input;
@@ -14,6 +15,8 @@ namespace WirelessSensorNodeDashboard.ViewModels
 {
     public sealed class MainUIViewModel : BaseViewModel
     {
+        private SerialPort _serialPort;
+
         private bool _canLoadData;
         private int _numRecordsToShow;
         
@@ -36,8 +39,11 @@ namespace WirelessSensorNodeDashboard.ViewModels
             set => SetPropertyAndNotify(ref _loadDataCommand, value, nameof(LoadDataCommand));
         }
 
-        public MainUIViewModel()
+        public MainUIViewModel(SerialPort serialPort)
         {
+            _serialPort = serialPort;
+            _serialPort.DataReceived += new SerialDataReceivedEventHandler(DataRecievedEvent);
+
             _canLoadData = true;
             _loadDataCommand = new RelayCommand(LoadRecordData, () => _canLoadData);
             TemperatureRecords = new ChartValues<TemperatureRecord>();
@@ -107,6 +113,15 @@ namespace WirelessSensorNodeDashboard.ViewModels
                     TemperatureRecords.Add(TemperatureRecord.CreateRecord(s));
             }
             OnPropertyChanged(nameof(TemperatureRecords));
+        }
+
+
+        private void DataRecievedEvent(object sender, SerialDataReceivedEventArgs e)
+        {
+            if (_serialPort.IsOpen)
+            {
+                Debug.Print("I got the serial event from the MainUIViewModel");
+            }
         }
     }
 }

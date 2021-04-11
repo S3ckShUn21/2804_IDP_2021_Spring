@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.IO.Ports;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -19,6 +20,7 @@ namespace WirelessSensorNodeDashboard
     {
         protected override void OnStartup(StartupEventArgs e)
         {
+            base.OnStartup(e);
             // Setup Live Charts to be able to use my data types
             var mapper = Mappers.Xy<TemperatureRecord>()
                 .X(model => model.RecordDateTime.Ticks)
@@ -29,15 +31,16 @@ namespace WirelessSensorNodeDashboard
 
             // TODO: Date Time formatter
 
+            // App wide serial port
+            SerialPort serialPort = new SerialPort();
+
             // Now set up the application
             MainWindow mainWindow = new MainWindow()
             {
-                DataContext = new MainWindowViewModel()
+                DataContext = new MainWindowViewModel(serialPort)
             };
 
             mainWindow.Show();
-
-            base.OnStartup(e);
         }
     }
 }

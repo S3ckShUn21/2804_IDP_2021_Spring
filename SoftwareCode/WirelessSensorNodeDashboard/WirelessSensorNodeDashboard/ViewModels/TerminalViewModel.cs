@@ -78,14 +78,14 @@ namespace WirelessSensorNodeDashboard.ViewModels
         #endregion
 
         #region CTOR
-        public TerminalViewModel()
+        public TerminalViewModel(SerialPort serialPort)
         {
             // Set the initial capacity to be 4096 characters
             _terminalText = new StringBuilder("", 4096);
             InputText = String.Empty;
 
             // Load COM stuff
-            _serialPort = new SerialPort();
+            _serialPort = serialPort;
             LoadComPortList();
             if( ComPorts.Count == 0 )
             {

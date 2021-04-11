@@ -5,9 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:WirelessSensorNodeDashboard.ViewModels"
         xmlns:local="clr-namespace:WirelessSensorNodeDashboard"
-                
         xmlns:views="clr-namespace:WirelessSensorNodeDashboard.Views"
-
         mc:Ignorable="d"
         Title="Wireless Sensor Node Dashboard" Height="600" Width="800"
         WindowStartupLocation="CenterScreen">
@@ -39,8 +37,8 @@
         </StackPanel>
 
         <!--Main Page View-->
-        <ContentControl Content="{Binding Path=CurrentContentControl}"
-                        Grid.Row="1" Grid.Column="1"/>
+        <ContentControl Grid.Row="1" Grid.Column="1"
+                        Content="{Binding CurrentViewModel}"/>
 
     </Grid>
 </Window>
