@@ -1,4 +1,7 @@
-#define BUTTON 12
+#define BUTTON          A2
+#define GROUND_PIN      A0
+
+#define DEBOUNCE_PERIOD 250
 
 unsigned long lastButtonTime;
 unsigned long currentTime;
@@ -9,7 +12,10 @@ void setup() {
   Serial.begin(9600);
   Serial.setTimeout(5000); // Sets the "readStringUntil" timeout to 5 seconds
 
-  pinMode(BUTTON, INPUT_PULLUP);  
+  pinMode(BUTTON, INPUT_PULLUP);
+
+  pinMode(GROUND_PIN, OUTPUT);
+  digitalWrite(GROUND_PIN, LOW);
 }
 
 void loop() {
@@ -30,7 +36,7 @@ void loop() {
     canPress = false;
   }
 
-  if(currentButtonState && currentTime > lastButtonTime + 100) {
+  if(currentButtonState && currentTime > lastButtonTime + DEBOUNCE_PERIOD) {
     canPress = true;
   } 
 }
