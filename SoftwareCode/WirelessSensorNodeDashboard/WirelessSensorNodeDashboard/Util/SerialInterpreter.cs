@@ -18,17 +18,19 @@ namespace WirelessSensorNodeDashboard.Util
             _serialPort.DtrEnable = true;
             _serialPort.DataBits = 8;
             _serialPort.Handshake = Handshake.None;
+            _serialPort.NewLine = "\r\n";
 
             // Setup the serial port callback that will invoke out event handleer
             _serialPort.DataReceived += (sender, args) =>
             {
                 // Parse Data
-                byte[] data = new byte[_serialPort.BytesToRead];
-                _serialPort.Read(data, 0, data.Length);
-                string line = Encoding.Default.GetString(data);
-
+                string line = _serialPort.ReadLine();
                 // Invoke our event with that data
                 onDataRecieved(line);
+
+                // Empty the buffers so we don't get double activation of the callback
+                _serialPort.DiscardInBuffer();
+                _serialPort.DiscardOutBuffer();
             };
         }
 

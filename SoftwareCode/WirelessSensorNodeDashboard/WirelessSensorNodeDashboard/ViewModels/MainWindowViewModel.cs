@@ -47,7 +47,6 @@ namespace WirelessSensorNodeDashboard.ViewModels
                     CurrentViewModel = _terminalViewModel;
                     break;
             }
-            Debug.Print("Page Button Pressed: " + page);
             OnPropertyChanged(nameof(CurrentViewModel));
         }
     }

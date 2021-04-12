@@ -112,6 +112,7 @@ namespace WirelessSensorNodeDashboard.ViewModels
         private void DataRecievedEvent(object sender, string str)
         {
             AppendToTerminal(str);
+            AppendToTerminal("\n");
         }
         #endregion
 

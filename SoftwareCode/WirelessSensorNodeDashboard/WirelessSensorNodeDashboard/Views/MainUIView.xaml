@@ -73,7 +73,7 @@
                         Background="{StaticResource WSN_White}"
                         VerticalAlignment="Center" Width="auto">
                     <TextBlock  Margin="4" VerticalAlignment="Center" HorizontalAlignment="Center"
-                                Text="28 &#186;C" FontSize="20"/>
+                                Text="{Binding CurrentTemperature}" FontSize="20"/>
                 </Border>
             </StackPanel>
 

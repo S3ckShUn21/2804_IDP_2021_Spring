@@ -20,6 +20,7 @@ namespace WirelessSensorNodeDashboard.ViewModels
 
         private bool _canLoadData;
         private int _numRecordsToShow;
+        private float _currentTemperature;
         #endregion
 
         #region Public Properties
@@ -33,9 +34,18 @@ namespace WirelessSensorNodeDashboard.ViewModels
             }
         }
 
+        public string CurrentTemperature
+        {
+            get { return $"{_currentTemperature:F2} °C"; }
+            set
+            {
+                _currentTemperature = float.Parse(value);
+                OnPropertyChanged(nameof(CurrentTemperature));
+            }
+        }
+
         public ChartValues<TemperatureRecord> TemperatureRecords { get; set; }
 
-        public float CurrentTemperature { get; set; }
         #endregion
 
         #region Public Commands
@@ -55,6 +65,9 @@ namespace WirelessSensorNodeDashboard.ViewModels
 
             _canLoadData = true;
             _loadDataCommand = new RelayCommand(LoadRecordData, () => _canLoadData);
+
+            _currentTemperature = 0;
+
             TemperatureRecords = new ChartValues<TemperatureRecord>();
             NumRecordsToShow = 30;
         }
@@ -63,8 +76,13 @@ namespace WirelessSensorNodeDashboard.ViewModels
         #region Events
         private void DataRecievedEvent(object sender, string str)
         {
-            Debug.Print("I got the serial event from the MainUIViewModel");
-            Debug.Print($"Data: {str}");
+            // Check to see if this is a data packet
+            if (str.Substring(0, 6).Equals("[DATA]"))
+            {
+                // The property automatically converts the string to the float for us
+                // and updates the UI
+                CurrentTemperature = str.Substring(6);
+            }
         }
         #endregion
 
