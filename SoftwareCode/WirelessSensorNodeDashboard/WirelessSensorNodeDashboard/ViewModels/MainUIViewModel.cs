@@ -19,8 +19,12 @@ namespace WirelessSensorNodeDashboard.ViewModels
         private SerialInterpreter _serialInterpreter;
 
         private bool _canLoadData;
+
         private int _numRecordsToShow;
         private float _currentTemperature;
+        private bool _displayCelcius;
+
+        private string _zipCode;
         #endregion
 
         #region Public Properties
@@ -34,13 +38,45 @@ namespace WirelessSensorNodeDashboard.ViewModels
             }
         }
 
-        public string CurrentTemperature
+        public float CurrentTemperature
         {
-            get { return $"{_currentTemperature:F2} °C"; }
+            get { return _currentTemperature; }
             set
             {
-                _currentTemperature = float.Parse(value);
+                _currentTemperature = value;
                 OnPropertyChanged(nameof(CurrentTemperature));
+            }
+        }
+
+        public bool DisplayCelcius
+        {
+            get { return _displayCelcius; }
+            set
+            {
+                _displayCelcius = value;
+                OnPropertyChanged(nameof(DisplayCelcius));
+                OnPropertyChanged(nameof(DisplayFahrenheit));
+            }
+        }
+
+        public bool DisplayFahrenheit
+        {
+            get { return !_displayCelcius; }
+            set
+            {
+                _displayCelcius = !value;
+                OnPropertyChanged(nameof(DisplayCelcius));
+                OnPropertyChanged(nameof(DisplayFahrenheit));
+            }
+        }
+
+        public string  ZipCode
+        {
+            get { return _zipCode; }
+            set 
+            { 
+                _zipCode = value;
+                OnPropertyChanged(nameof(ZipCode));
             }
         }
 
@@ -67,6 +103,9 @@ namespace WirelessSensorNodeDashboard.ViewModels
             _loadDataCommand = new RelayCommand(LoadRecordData, () => _canLoadData);
 
             _currentTemperature = 0;
+            _displayCelcius = true;
+
+            _zipCode = "";
 
             TemperatureRecords = new ChartValues<TemperatureRecord>();
             NumRecordsToShow = 30;
@@ -79,9 +118,10 @@ namespace WirelessSensorNodeDashboard.ViewModels
             // Check to see if this is a data packet
             if (str.Substring(0, 6).Equals("[DATA]"))
             {
-                // The property automatically converts the string to the float for us
-                // and updates the UI
-                CurrentTemperature = str.Substring(6);
+                // The property automatically converts the string to the float for us, and updates the UI
+                CurrentTemperature = float.Parse(str.Substring(6));
+
+                UpdateTemperatureHistory(_currentTemperature);
             }
         }
         #endregion
@@ -147,11 +187,21 @@ namespace WirelessSensorNodeDashboard.ViewModels
             foreach (string s in records)
             {
                 if (!string.IsNullOrEmpty(s))
-                    TemperatureRecords.Add(TemperatureRecord.CreateRecord(s));
+                    TemperatureRecords.Add(TemperatureRecord.ParseRecord(s));
             }
             OnPropertyChanged(nameof(TemperatureRecords));
         }
 
+        private void UpdateTemperatureHistory(float newData)
+        {
+            TemperatureRecord record = new TemperatureRecord(DateTime.UtcNow, newData);
+            using (StreamWriter sw = File.AppendText(TemperatureRecord.RecordFileName))
+            {
+                sw.WriteLine(record);
+            }
+            TemperatureRecords.Add(record);
+            OnPropertyChanged(nameof(TemperatureRecords));
+        }
         #endregion
 
     }

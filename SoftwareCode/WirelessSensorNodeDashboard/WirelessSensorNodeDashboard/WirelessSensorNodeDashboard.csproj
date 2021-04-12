@@ -59,13 +59,4 @@
     </Resource>
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="Records.csv">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="SavedData.csv">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>

@@ -1,27 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace WirelessSensorNodeDashboard.Util
 {
     public sealed class TemperatureRecord
     {
-        public const string DateTimeFormat = "yyyy-MM-ddThh:mm:ss:ff";
-        public const string RecordFileName = "Records.csv";
+        public const string DateTimeFormat = "yyyy-MM-ddTHH:mm:ss:ff";
+        public const string RecordFileName = @"Records.csv";
         public DateTime RecordDateTime { get; set; }
-        public int RecordTemperature { get; set; }
+        public float RecordTemperature { get; set; }
 
-        public TemperatureRecord(DateTime dateTime, int temperature)
+        public TemperatureRecord(DateTime dateTime, float temperature)
         {
             RecordDateTime = dateTime;
             RecordTemperature = temperature;
         }
 
-        public static TemperatureRecord CreateRecord(string str)
+        public override string ToString()
+        {
+            return $"{RecordDateTime.ToString(DateTimeFormat)}, {RecordTemperature:F2}";
+        }
+
+        // This method is used if you are pulling a line from the CSV
+        public static TemperatureRecord ParseRecord(string str)
         {
             string[] fields = str.Split(',');
             DateTime tempDT = DateTime.ParseExact(fields[0], DateTimeFormat, null);
-            int tempT = int.Parse(fields[1]);
+            float tempT = float.Parse(fields[1]);
             return new TemperatureRecord(tempDT, tempT);
         }
     }
