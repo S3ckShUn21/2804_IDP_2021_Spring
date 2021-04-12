@@ -32,12 +32,12 @@ namespace WirelessSensorNodeDashboard
             // TODO: Date Time formatter
 
             // App wide serial port
-            SerialPort serialPort = new SerialPort();
+            SerialInterpreter serialInterpreter = new SerialInterpreter();
 
             // Now set up the application
             MainWindow mainWindow = new MainWindow()
             {
-                DataContext = new MainWindowViewModel(serialPort)
+                DataContext = new MainWindowViewModel(serialInterpreter)
             };
 
             mainWindow.Show();

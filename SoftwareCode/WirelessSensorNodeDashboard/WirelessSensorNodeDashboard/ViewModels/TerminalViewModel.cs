@@ -4,6 +4,7 @@ using System.IO.Ports;
 using System.Text;
 using System.Windows.Input;
 using WirelessSensorNodeDashboard.Commands;
+using WirelessSensorNodeDashboard.Util;
 
 namespace WirelessSensorNodeDashboard.ViewModels
 {
@@ -14,7 +15,7 @@ namespace WirelessSensorNodeDashboard.ViewModels
         private StringBuilder _terminalText;
 
         // Serial Port info
-        private SerialPort _serialPort;
+        private SerialInterpreter _serialInterpreter;
 
         // Commands
         private ICommand _lineEnteredCommand;
@@ -78,14 +79,16 @@ namespace WirelessSensorNodeDashboard.ViewModels
         #endregion
 
         #region CTOR
-        public TerminalViewModel(SerialPort serialPort)
+        public TerminalViewModel(SerialInterpreter serialInterpreter)
         {
             // Set the initial capacity to be 4096 characters
             _terminalText = new StringBuilder("", 4096);
             InputText = String.Empty;
 
             // Load COM stuff
-            _serialPort = serialPort;
+            _serialInterpreter = serialInterpreter;
+            _serialInterpreter.DataReceived += DataRecievedEvent;
+
             LoadComPortList();
             if( ComPorts.Count == 0 )
             {
@@ -96,9 +99,9 @@ namespace WirelessSensorNodeDashboard.ViewModels
             }
             OnPropertyChanged(nameof(SelectedComPort));
 
-            _lineEnteredCommand = new RelayCommand<string>(LineEntered, param => _serialPort.IsOpen);
+            _lineEnteredCommand = new RelayCommand<string>(LineEntered, param => _serialInterpreter.IsOpen());
             _openSerialPortCommand = new RelayCommand(OpenSerialPort, () => SelectedComPort != null);
-            _closeSerialPortCommand = new RelayCommand(CloseSerialPort, () => _serialPort.IsOpen);
+            _closeSerialPortCommand = new RelayCommand(CloseSerialPort, () => _serialInterpreter.IsOpen());
             _reloadComPortListCommand = new RelayCommand(LoadComPortList);
             _clearTeminalCommand = new RelayCommand(ClearTerminal);
             
@@ -106,15 +109,9 @@ namespace WirelessSensorNodeDashboard.ViewModels
         #endregion
 
         #region Events
-        private void DataRecievedEvent(object sender, SerialDataReceivedEventArgs e)
+        private void DataRecievedEvent(object sender, string str)
         {
-            if (_serialPort.IsOpen)
-            {
-                byte[] data = new byte[_serialPort.BytesToRead];
-                _serialPort.Read(data, 0, data.Length);
-                string line = Encoding.Default.GetString(data);
-                AppendToTerminal(line);
-            }
+            AppendToTerminal(str);
         }
         #endregion
 
@@ -122,29 +119,22 @@ namespace WirelessSensorNodeDashboard.ViewModels
 
         private void OpenSerialPort()
         {
-            if (_serialPort.IsOpen)
+            if (_serialInterpreter.IsOpen())
             {
-                _serialPort.Dispose();
-                _serialPort.Close();
+                _serialInterpreter.Dispose();
+                _serialInterpreter.Close();
             }
 
-            _serialPort.PortName = SelectedComPort;
-            _serialPort.BaudRate = 9600;
-            _serialPort.DtrEnable = true;
-            _serialPort.DataBits = 8;
-            _serialPort.Handshake = Handshake.None;
-            _serialPort.Open();
-            _serialPort.DiscardInBuffer();
-
-            _serialPort.DataReceived += new SerialDataReceivedEventHandler(DataRecievedEvent);
+            _serialInterpreter.setComPort(SelectedComPort);
+            _serialInterpreter.Open();
         }
 
         private void CloseSerialPort()
         {
-            if (_serialPort.IsOpen)
+            if (_serialInterpreter.IsOpen())
             {
-                _serialPort.Dispose();
-                _serialPort.Close();
+                _serialInterpreter.Dispose();
+                _serialInterpreter.Close();
             }
         }
 
@@ -152,7 +142,7 @@ namespace WirelessSensorNodeDashboard.ViewModels
         {
             InputText = String.Empty;
             OnPropertyChanged(nameof(InputText));
-            _serialPort.Write(line + '\n');
+            _serialInterpreter.Write(line + '\n');
         }
 
         private void AppendToTerminal(string line)

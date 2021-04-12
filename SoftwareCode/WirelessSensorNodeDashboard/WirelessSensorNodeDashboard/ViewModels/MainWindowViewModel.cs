@@ -6,6 +6,7 @@ using System.Text;
 using System.Windows.Controls;
 using System.Windows.Input;
 using WirelessSensorNodeDashboard.Commands;
+using WirelessSensorNodeDashboard.Util;
 using WirelessSensorNodeDashboard.Views;
 
 namespace WirelessSensorNodeDashboard.ViewModels
@@ -24,10 +25,10 @@ namespace WirelessSensorNodeDashboard.ViewModels
             set => SetPropertyAndNotify(ref _menuBarClickedCommand, value, nameof(MenuBarClickedCommand));
         }
 
-        public MainWindowViewModel(SerialPort serialPort)
+        public MainWindowViewModel(SerialInterpreter serialInterpreter)
         {
-            _terminalViewModel = new TerminalViewModel(serialPort);
-            _mainUIViewModel = new MainUIViewModel(serialPort);
+            _terminalViewModel = new TerminalViewModel(serialInterpreter);
+            _mainUIViewModel = new MainUIViewModel(serialInterpreter);
 
             CurrentViewModel = _mainUIViewModel;
 
