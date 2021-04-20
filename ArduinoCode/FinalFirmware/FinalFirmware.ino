@@ -11,13 +11,13 @@
 #define BT_TX                     5
 
 // Temperature Defines
-#define TEMP_ZERO_DEGREES_OFFSET  500.0f          // 500mV
+#define TEMP_ZERO_DEGREES_OFFSET  540.0f          // 540mV for our specific temp sensor
 #define TEMP_MV_PER_C             10.0f           // 10mV / *C
 #define VOLTAGE_SCALER            4.8828125f      // 4.8 mV per analogReading
 #define NUM_TEMP_SAMPLES          32
 
 // Interrupt Defines
-#define INTERRUPT_PERIODS         5              // Total time = # * 2 (in sec)
+#define INTERRUPT_PERIODS         15              // Total time = # * 2 (in sec)
 
 // Boost Converter Defines
 #define BOOST_READING_9V          519             // ( (9.0/3.55) / 5 ) * 1024
@@ -31,7 +31,7 @@
 // Interrupt Vars
 volatile byte interruptCount = 0;
 volatile float avgMeasurement = 0;
-volatile bool sendData = false;
+volatile float measurementBuffer[NUM_TEMP_SAMPLES];
 volatile bool sleepEnabled = false;
 
 // Boost Converter Vars
@@ -130,21 +130,25 @@ ISR(TIMER1_COMPA_vect){
 // Gets a set of readings and averages them
 void completeTemperatureReading(void) {
   avgMeasurement = 0;
-  // Grab 32 readings
+  // Grab NUM_TEMP_SAMPLES readings
   for( byte i = 0; i < NUM_TEMP_SAMPLES; i++ ) {
-    uint16_t reading = analogRead(TEMP_READ_PIN);
-    avgMeasurement += translateTemperature( reading * VOLTAGE_SCALER ); 
+    float reading = analogRead(TEMP_READ_PIN);
+    float translatedTemp = translateTemperature( reading * VOLTAGE_SCALER );
+    measurementBuffer[i] = translatedTemp;
   }
-  avgMeasurement /=  NUM_TEMP_SAMPLES;
-  sendData = true;
+  // only average the last half of the samples because the ADC has time to settle at this point
+  for( byte i = NUM_TEMP_SAMPLES >> 1; i < NUM_TEMP_SAMPLES; i++ ) {
+    avgMeasurement += measurementBuffer[i];
+  }
+  avgMeasurement /=  (NUM_TEMP_SAMPLES >> 1);
 }
 
 
 // Based on the MCP9700E
 // Takes a voltage in milivolts and turns it into a temperature reading in *C 
 float translateTemperature( float voltage ) {
-  float deltaV = voltage - TEMP_ZERO_DEGREES_OFFSET;    // get the voltage to the zero *C point
-  int degreesC = deltaV / TEMP_MV_PER_C;                // based on the slope, find the *C
+  float deltaV = voltage - TEMP_ZERO_DEGREES_OFFSET;      // get the voltage to the zero *C point
+  float degreesC = deltaV / TEMP_MV_PER_C;                // based on the slope, find the *C
   return degreesC;
 }
 

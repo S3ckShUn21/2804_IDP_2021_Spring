@@ -16,6 +16,9 @@ void setup() {
 
   pinMode(GROUND_PIN, OUTPUT);
   digitalWrite(GROUND_PIN, LOW);
+
+  // seed the random number generation
+  randomSeed(analogRead(A4));
 }
 
 void loop() {
@@ -30,8 +33,16 @@ void loop() {
   currentButtonState = digitalRead(BUTTON);
   
   if(!currentButtonState && canPress) {
-    Serial.print(F("[INFO] : Current Runtime = "));
-    Serial.println(currentTime, DEC);
+    
+    char format[40] = "[INFO] : Current Runtime = %lu";
+    char strBuffer[40];
+    sprintf(strBuffer, format, currentTime);
+    Serial.println(strBuffer);
+    delay(200);
+    float data = 24 + (random(100) / 10.0f) - 5.0;
+    Serial.print("[DATA]");
+    Serial.println(data);
+    
     lastButtonTime = currentTime;
     canPress = false;
   }
