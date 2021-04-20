@@ -7,7 +7,7 @@
         xmlns:local="clr-namespace:WirelessSensorNodeDashboard"
         xmlns:views="clr-namespace:WirelessSensorNodeDashboard.Views"
         mc:Ignorable="d"
-        Title="Wireless Sensor Node Dashboard" Height="600" Width="800"
+        Title="Wireless Sensor Node Dashboard" Height="600" Width="900"
         WindowStartupLocation="CenterScreen">
 
     <Grid>

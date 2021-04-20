@@ -4,5 +4,6 @@
 
     <converters:TemperatureToCelciusConverter x:Key="TempToCelConverter"/>
     <converters:TemperatureToFahrenheitConverter x:Key="TempToFarConverter"/>
+    <converters:IntToStringConverter x:Key="IntToStringConverter"/>
 
 </ResourceDictionary>

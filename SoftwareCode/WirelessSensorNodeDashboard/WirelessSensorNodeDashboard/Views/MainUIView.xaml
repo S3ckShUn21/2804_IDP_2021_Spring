@@ -35,17 +35,22 @@
                                 DataTooltip="{x:Null}"
                                 Background="Transparent">
                 <lvc:CartesianChart.AxisY>
-                    <lvc:Axis MinValue="-10" MaxValue="50"/>
+                    <lvc:Axis MinValue="0" MaxValue="40"/>
                 </lvc:CartesianChart.AxisY>
                 <lvc:CartesianChart.AxisX>
-                    <lvc:Axis MinValue="0" MaxValue="30"/>
+                    <lvc:Axis LabelFormatter="{Binding DateTimeFormatter}"
+                              MinValue="{Binding XAxisMin}"
+                              MaxValue="{Binding XAxisMax}">
+                        <lvc:Axis.Separator>
+                            <lvc:Separator Step="{Binding AxisStep}"/>
+                        </lvc:Axis.Separator>
+                    </lvc:Axis>
                 </lvc:CartesianChart.AxisX>
                 <lvc:CartesianChart.Series>
                     <lvc:LineSeries Title="Temperature Records"
                                 Values="{Binding TemperatureRecords}"
-                                PointGeometry="{x:Null}" 
                                 LineSmoothness="1"
-                                StrokeThickness="2" 
+                                StrokeThickness="3" 
                                 Stroke="{StaticResource WSN_Accent}"
                                 Fill="Transparent"/>
                 </lvc:CartesianChart.Series>
@@ -113,26 +118,42 @@
                     </Grid.RowDefinitions>
 
                     <!-- Enter your zipcode -->
-                    <TextBox    Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+                    <TextBox    x:Name="ZipCodeTextbox"
+                                Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
                                 Height="20" Margin="5" >
                         <TextBox.Style>
                             <Style TargetType="TextBox">
-                                <Setter Property="Text" Value="{Binding ZipCode}"/>
+                                <Setter Property="Text" Value="{Binding ZipCode, Converter={StaticResource IntToStringConverter}, Mode=TwoWay}"/>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding ZipCode}" Value="">
+                                    <DataTrigger Binding="{Binding ZipCode}" Value="-1">
                                         <Setter Property="Text" Value="Please Enter ZipCode"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </TextBox.Style>
+                        <TextBox.InputBindings>
+                            <KeyBinding Key="Return" 
+                                        Command="{Binding Path=GetWeatherDataCommand}"
+                                        CommandParameter="{Binding ElementName=ZipCodeTextbox, Path=Text}"/>
+                        </TextBox.InputBindings>
                     </TextBox>
                     <!-- Location Temperature -->
                     <StackPanel Grid.Row="1" Grid.Column="0" Margin="5" Orientation="Vertical">
                         <Label Content="Current Temperature" VerticalContentAlignment="Top"
                                FontSize="12"
                                Foreground="{StaticResource WSN_White}"/>
-                        <TextBlock  TextAlignment="Center" VerticalAlignment="Center"
-                                Text="15 &#186;C" Foreground="{StaticResource WSN_White}"/>
+                        <TextBlock TextAlignment="Center" VerticalAlignment="Center" Foreground="{StaticResource WSN_White}">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Text" Value="{Binding WeatherTemperature, Converter={StaticResource TempToCelConverter}}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding DisplayCelcius}" Value="False">
+                                            <Setter Property="Text" Value="{Binding WeatherTemperature, Converter={StaticResource TempToFarConverter}}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
                     </StackPanel>
                     <!-- Weather Description -->
                     <TextBox    Grid.Row="1" Grid.Column="1"
@@ -140,12 +161,12 @@
                                 Background="Transparent" Foreground="{StaticResource WSN_White}"
                                 TextAlignment="Center" VerticalAlignment="Center"
                                 FontSize="15"
-                                Text="Partly Cloudy"/>
+                                Text="{Binding WeatherDescription}"/>
                     <!-- Picture of the weather -->
                     <Image  Grid.Row="0" Grid.Column="2" Grid.RowSpan="2"
                             Height="64" Margin="5"
                             RenderOptions.BitmapScalingMode="HighQuality"
-                            Source="/Resources/partlycloudy.png"/>
+                            Source="{Binding WeatherIconSource}"/>
                 </Grid>
             </Border>
 
