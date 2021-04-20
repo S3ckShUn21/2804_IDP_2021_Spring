@@ -31,7 +31,6 @@
 // Interrupt Vars
 volatile byte interruptCount = 0;
 volatile float avgMeasurement = 0;
-volatile float measurementBuffer[NUM_TEMP_SAMPLES];
 volatile bool sleepEnabled = false;
 
 // Boost Converter Vars
@@ -129,18 +128,50 @@ ISR(TIMER1_COMPA_vect){
 
 // Gets a set of readings and averages them
 void completeTemperatureReading(void) {
+  float measurementBuffer[NUM_TEMP_SAMPLES];
   avgMeasurement = 0;
+  
+  //
   // Grab NUM_TEMP_SAMPLES readings
+  //
   for( byte i = 0; i < NUM_TEMP_SAMPLES; i++ ) {
     float reading = analogRead(TEMP_READ_PIN);
     float translatedTemp = translateTemperature( reading * VOLTAGE_SCALER );
     measurementBuffer[i] = translatedTemp;
+    delayMicroseconds(100); // hopefully this gives the ACD time to chill ??
   }
-  // only average the last half of the samples because the ADC has time to settle at this point
-  for( byte i = NUM_TEMP_SAMPLES >> 1; i < NUM_TEMP_SAMPLES; i++ ) {
+
+  //
+  // Remove the top and bottom two outlier samples
+  //
+  byte firstH = 0;          // i of the top sample
+  byte secondH = 0;         // i of the 2nd highest sample
+  byte firstL = 0;          // i of the bottom sample
+  byte secondL = 0;         // i of the 2nd smallest sample
+  
+  for( byte i = 0; i < NUM_TEMP_SAMPLES; i++ ) {
+    float var = measurementBuffer[i];
+    if( var > measurementBuffer[firstH] ) { // High Check
+      secondH = firstH;
+      firstH = i;
+    }
+    if( var < measurementBuffer[firstL] ) { // Low Check
+      secondL = firstL;
+      firstL = i;
+    }
+  }
+  measurementBuffer[firstH] = 0;
+  measurementBuffer[secondH] = 0;
+  measurementBuffer[firstL] = 0;
+  measurementBuffer[secondL] = 0;
+  
+  //
+  // Average the filtered data set
+  //
+  for( byte i = 0; i < NUM_TEMP_SAMPLES; i++ ) {
     avgMeasurement += measurementBuffer[i];
   }
-  avgMeasurement /=  (NUM_TEMP_SAMPLES >> 1);
+  avgMeasurement /= (NUM_TEMP_SAMPLES - 4); // Sub 4 bc we filter the top/bottom 2 outliers
 }
 
 
